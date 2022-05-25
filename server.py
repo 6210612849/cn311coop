@@ -7,7 +7,7 @@ from player import Player
 from bullet import Bullet
 from boss import Boss
 
-server = "172.20.10.3"
+server = "192.168.43.142"
 port = 8080
 
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -97,15 +97,15 @@ def thread_client(conn, player):
                 boss[0].update()
                 conn.sendall(pickle.dumps(boss[0]))
             if data.index == 5:
-                
+
                 global count_player
-                
+
                 if not data:
                     # print("disconnected no data")
                     break
                 status = data.data
-                #it will give client a id when they access this code in first time
-                if (status ==  'N'):  
+                # it will give client a id when they access this code in first time
+                if (status == 'N'):
                     if(count_player != 3):
                         count_player += 1
                         reply = str(count_player)
@@ -115,10 +115,7 @@ def thread_client(conn, player):
                     if(count_player == 2):
                         reply = 'R'
 
-
                 conn.sendall(pickle.dumps(reply))
-                
-
 
         except socket.error as e:
             print(e)

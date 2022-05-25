@@ -6,7 +6,7 @@ from command import Command
 class Network:
     def __init__(self):
         self.client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        self.server = "172.20.10.3"
+        self.server = "192.168.43.142"
         self.port = 8080
         self.addr = (self.server, self.port)
         self.p = self.connect()
@@ -66,8 +66,8 @@ class Network:
 
     def sendReady(self, data):
         try:
-            #command 5 for sent ready to server
-            
+            # command 5 for sent ready to server
+
             data_command = Command(5, data)
 
             self.client.send(pickle.dumps(data_command))
@@ -77,4 +77,3 @@ class Network:
             return return_dumps
         except socket.error as e:
             print(e)
-
