@@ -1,6 +1,8 @@
+#from curses import COLOR_BLUE
 import pygame
 import random
 
+pygame.font.init()
 
 class Boss():
     def __init__(self, x, y, width, height, color):
@@ -16,8 +18,15 @@ class Boss():
         self.attack_delay = False
 
     def draw(self, win):
+        
+        font=pygame.font.Font('BitMap.ttf', 30)
+        hpText = font.render(str(self.hp), True, (255, 0, 0))
+        win.blit(hpText, (40, 250))
+
         if self.hp <= 0:
             pygame.draw.rect(win, (255, 255, 0), self.rect)
+            
+            
         else:
 
             pygame.draw.rect(win, self.color, self.rect)

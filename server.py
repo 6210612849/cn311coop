@@ -98,17 +98,12 @@ def thread_client(conn, player):
                 conn.sendall(pickle.dumps(boss[0]))
             if data.index == 5:
                 
-                
                 global count_player
-
-                #reply = 'lul'
                 
                 if not data:
                     # print("disconnected no data")
                     break
                 status = data.data
-                #print(status)
-
                 #it will give client a id when they access this code in first time
                 if (status ==  'N'):  
                     if(count_player != 3):
@@ -118,7 +113,7 @@ def thread_client(conn, player):
                 else:
                     #reply = 'wait'
                     if(count_player == 2):
-                        reply = 'ready'
+                        reply = 'R'
 
 
                 conn.sendall(pickle.dumps(reply))
