@@ -27,13 +27,13 @@ class Player():
 
     def draw(self, win):
         sprites = pygame.image.load(
-            r'C:\Users\ANFIELD\Desktop\tu\cn311\project\ufo.png')
+            r'.\ufo.png')
 
         win.blit(sprites, (self.x, self.y))
         if self.GetSpeedBuff:
             # print("sprite speed buff")
             windSprites = pygame.image.load(
-                r'C:\Users\ANFIELD\Desktop\tu\cn311\project\Wind-PNG-Images.png')
+                r'.\Wind-PNG-Images.png')
             windSprites = pygame.transform.smoothscale(windSprites, (50, 50))
             win.blit(windSprites, (450, 450))
 

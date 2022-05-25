@@ -1,3 +1,4 @@
+from itertools import count
 import socket
 from _thread import *
 import sys
@@ -6,8 +7,8 @@ from player import Player
 from bullet import Bullet
 from boss import Boss
 
-server = "192.168.43.142"
-port = 5555
+server = "172.20.10.3"
+port = 8080
 
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
@@ -22,6 +23,7 @@ print("waiting connection")
 
 players = [Player(150, 350, 50, 50, (255, 0, 0)),
            Player(350, 350, 50, 50, (0, 255, 0))]
+count_player = 0
 bullets = []
 boss = [Boss(150, 0, 100, 100, (255, 0, 0)), ]
 
@@ -94,6 +96,34 @@ def thread_client(conn, player):
             if data.index == 4:
                 boss[0].update()
                 conn.sendall(pickle.dumps(boss[0]))
+            if data.index == 5:
+                
+                
+                global count_player
+
+                #reply = 'lul'
+                
+                if not data:
+                    # print("disconnected no data")
+                    break
+                status = data.data
+                #print(status)
+
+                #it will give client a id when they access this code in first time
+                if (status ==  'N'):  
+                    if(count_player != 3):
+                        count_player += 1
+                        reply = str(count_player)
+                        print('new count_player' + str(count_player))
+                else:
+                    #reply = 'wait'
+                    if(count_player == 2):
+                        reply = 'ready'
+
+
+                conn.sendall(pickle.dumps(reply))
+                
+
 
         except socket.error as e:
             print(e)
