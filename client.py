@@ -10,10 +10,11 @@ from menu import menuscreen
 from howtoscreen import howtoscreen
 from createscreen import CreateScreen
 from waitingscreen import WaitingScreen
+from credit import creditscreen
 pygame.init()
 width = 500
 height = 500
-state = ['N', 'R', 'W', 'HOWTO', 'CREATEROOM', 'NOTREADY', 'READY']
+state = ['N', 'R', 'W', 'HOWTO', 'CREATEROOM', 'NOTREADY', 'READY', "CREDIT"]
 currentState = state[0]
 playerId = ''
 getPlayerId = True
@@ -40,7 +41,6 @@ def make_pos(tup):
 
 
 def redrawWindow(win, player, player2, Bullets, Boss, BossBullets, teamHP):
-    #print('call redrawWindow')
     win.fill((255, 255, 255))
 
     player.draw(win, teamHP)
@@ -77,7 +77,6 @@ def playerRun(p, n, clock):
 def preStartHowto(screen_1_howto):
     global KEY_DOWN_COOLDOWN
     global playerId, currentState
-    print(currentState)
     keys = pygame.key.get_pressed()
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
@@ -132,7 +131,6 @@ def preStartCreate(screen_1_create):
     screen_1_create.draw(win)
     pygame.display.update()
 
-
 def preStart(screen_1):
 
     global playerId, currentState
@@ -164,12 +162,13 @@ def preStart(screen_1):
             global n
             n = Network()
             currentState = state[2]
+        elif my_state == 3:
+            currentState = state[7]
         KEY_DOWN_COOLDOWN = False
     win.fill((255, 255, 255))
     screen_1.draw(win)
 
     pygame.display.update()
-
 
 def waitForStart(n, screen_1_waiting):
     global playerId, currentState, KEY_DOWN_COOLDOWN, KEY_READY_TOGGLE, check_ready
@@ -200,6 +199,22 @@ def waitForStart(n, screen_1_waiting):
     screen_1_waiting.draw(win)
     pygame.display.update()
 
+def preStartCredit(screen_1_credit):
+    global KEY_DOWN_COOLDOWN
+    global playerId, currentState
+
+    keys = pygame.key.get_pressed()
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            pygame.quit()
+        if event.type == pygame.KEYDOWN and not KEY_DOWN_COOLDOWN:
+            KEY_DOWN_COOLDOWN = True
+    if keys[pygame.K_ESCAPE] and KEY_DOWN_COOLDOWN:
+        currentState = state[0]
+    win.fill((255, 255, 255))
+    screen_1_credit.draw(win)
+    pygame.display.update()
+
 
 def main():
     #run = True
@@ -211,6 +226,7 @@ def main():
     screen_1_create = CreateScreen(font_size=30, text_rgb=(106, 159, 181), bg_rgb=(
         255, 255, 255),)
     screen_1_waiting = WaitingScreen()
+    screen_1_credit = creditscreen()
     while run:
         clock.tick(60)
 
@@ -222,12 +238,12 @@ def main():
                 waitForStart(n, screen_1_waiting)
 
             case 'R':
-                # print('state R')
                 playerRun(p, n, clock)
             case 'HOWTO':
                 preStartHowto(screen_1_howto)
             case 'CREATEROOM':
                 preStartCreate(screen_1_create)
-
+            case 'CREDIT':
+                preStartCredit(screen_1_credit)
 
 main()

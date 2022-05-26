@@ -9,7 +9,7 @@ from boss import Boss
 import pygame
 from random import Random, random
 from bossBullet import BossBullet
-server = "192.168.43.142"
+server = "172.20.10.3"
 port = 8080
 
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -45,16 +45,16 @@ def make_pos(tup):
 def thread_check_create(conn,):
     global room_avalible, currentPlayer, count_max_player
     data = pickle.loads(conn.recv(2048))
-    print("hey check room")
+    """ print("hey check room")
     print((data))
     print((data.index))
-    print(type(data.index))
+    print(type(data.index)) """
     if data.index == 6:
         room_avalible = True
         count_max_player = data.data
         print(room_avalible)
     if room_avalible:
-        print("hey check room2")
+        #print("hey check room2")
         start_new_thread(thread_client, (conn, currentPlayer,))
         currentPlayer += 1
 
@@ -69,10 +69,8 @@ def thread_server():
             for bullet in bullets:
                 if bullet.y >= 0:
                     if (bullet.x > boss[0].x and bullet.x < boss[0].x+boss[0].width) and (bullet.y > boss[0].y and bullet.y < boss[0].y+boss[0].height):
-                        print("hit", bullet.x)
                         bullets.remove(bullet)
-                        boss[0].hp -= 50
-                        print("hit", boss[0].hp)
+                        boss[0].hp -= 10
                 else:
                     bullets.remove(bullet)
                 bullet.update()
@@ -95,7 +93,6 @@ def thread_server():
                         if (condition1 or condition2 or condition3 or condition4):
                             players_hp -= 1
                             bossBullets.remove(bossbullet)
-                            print("hit: ", players_hp)
                     elif count_max_player == 3:
                         condition1 = (bossbullet.x > players[0].x and bossbullet.x < players[0].x+players[0].width) and (
                             bossbullet.y > players[0].y and bossbullet.y < players[0].y+players[0].height)
@@ -116,47 +113,30 @@ def thread_server():
 
                             players_hp -= 1
                             bossBullets.remove(bossbullet)
-                            print("hit: ", players_hp)
-
+                            
                 else:
                     bossBullets.remove(bossbullet)
 
 
 def thread_client(conn, player):
-    # print("thred first", pickle.dumps(players[player]))
+    
     print("in thredad", player)
     conn.send(pickle.dumps("connect complete"))
-    # print("connect conn")
     reply = ""
     count_test = 0
     while True:
         try:
 
-            # data = pickle.loads(conn.recv(2048))
-            # players[player] = data
-
-            # if not data:
-            #     print("disconnected no data")
-            #     break
-            # else:
-            #     if player == 1:
-            #         reply = players[0]
-            #     else:
-            #         reply = players[1]
-            #     print("recieved:", reply)
-            # conn.sendall(pickle.dumps(reply))
 
             data = pickle.loads(conn.recv(2048))
-            # print("test", count_test)
+            
             count_test += 1
             if data.index == 0:
                 conn.send(pickle.dumps(players[player]))
             if data.index == 1:
                 players[player] = data.data
-                # print("newtype old", players[player])
-
                 if not data:
-                    # print("disconnected no data")
+                   
                     break
                 else:
                     reply_temp = []
@@ -201,24 +181,13 @@ def thread_client(conn, player):
 
                     else:
                         reply = players[0:3]
-                    # print("recieved:", reply)
+                   
 
                 conn.sendall(pickle.dumps(reply))
             if data.index == 2:
                 bullets.append(data.data)
                 print("bullet", bullets)
             if data.index == 3:
-                # for bullet in bullets:
-                #     if bullet.y >= 0:
-                #         if (bullet.x > boss[0].x and bullet.x < boss[0].x+boss[0].width) and (bullet.y > boss[0].y and bullet.y < boss[0].y+boss[0].height):
-                #             print("hit", bullet.x)
-                #             bullets.remove(bullet)
-                #             boss[0].hp -= 10
-                #             print("hit", boss[0].hp)
-                #     else:
-                #         bullets.remove(bullet)
-                #     bullet.update()
-
                 conn.sendall(pickle.dumps(bullets))
             if data.index == 4:
 
@@ -252,7 +221,7 @@ def thread_client(conn, player):
         except socket.error as e:
             print(e)
             break
-    # print("lost connection")
+    
     conn.close()
 
 
@@ -264,17 +233,10 @@ count_player_in_room = 0
 count_max_player = 0
 while True:
     conn, addr = s.accept()
-    # print("connected", addr)
-    # print("connected", conn)
-    print("heY ayyy")
-    # print(conn, addr)
-    # if (conn):
-    #     if (pickle.loads(conn.recv(2048))).index == 6:
-    #         print("creat success")
+    
     if room_avalible:
         start_new_thread(thread_client, (conn, currentPlayer,))
         currentPlayer += 1
     else:
         conn.send(pickle.dumps("connect complete"))
-        print("in true")
         start_new_thread(thread_check_create, (conn,))

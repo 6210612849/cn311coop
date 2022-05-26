@@ -6,7 +6,7 @@ from command import Command
 class Network:
     def __init__(self):
         self.client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        self.server = "192.168.43.142"
+        self.server = "172.20.10.3"
         self.port = 8080
         self.addr = (self.server, self.port)
         self.p = self.connect()
