@@ -58,7 +58,7 @@ class menuscreen(Sprite):
 
         count_y = 0
         spaceSprites = pygame.image.load(
-            r'.\space_bg.jpg')
+            r'.\pic\space_bg.jpg')
         spaceSprites = pygame.transform.smoothscale(spaceSprites, (500, 500))
         win.blit(spaceSprites, (0, 0))
         for my_image in self.image:

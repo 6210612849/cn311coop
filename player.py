@@ -13,6 +13,8 @@ class Player():
         self.color = color
         self.rect = (x, y, width, height)
         self.vel = 3
+
+        self.playable = 1
         self.shot_delay = False
         self.COOLDOWN_TIME_MS = 100
         self.countShotDelay = 0
@@ -25,15 +27,24 @@ class Player():
         self.SpeedBuff = 0
         self.SpeedBuffLimit = 300
 
-    def draw(self, win):
-        sprites = pygame.image.load(
-            r'.\ufo.png')
+    def draw(self, win, teamHP):
+        font=pygame.font.Font('BitMap.ttf', 30)
+        sprites = pygame.image.load(r'.\pic\ufo.png')
+        hpText = font.render(str(teamHP), True, (255, 0, 0))
 
+        if(teamHP <= 0):
+            sprites = pygame.image.load(r'.\pic\redcross.png')
+            hpText = font.render('u r lose now pls try again', True, (255, 0, 0))
+            self.playable = 0
+            self.x = 50
+            self.y = 50
+        
+
+        win.blit(hpText, (self.x, self.y-60))
         win.blit(sprites, (self.x, self.y))
         if self.GetSpeedBuff:
             # print("sprite speed buff")
-            windSprites = pygame.image.load(
-                r'.\Wind-PNG-Images.png')
+            windSprites = pygame.image.load(r'.\pic\Wind-PNG-Images.png')
             windSprites = pygame.transform.smoothscale(windSprites, (50, 50))
             win.blit(windSprites, (450, 450))
 
@@ -43,24 +54,24 @@ class Player():
 
         if keys[pygame.K_LEFT]:
             if self.x >= 20:
-                self.x -= self.vel
+                self.x -= self.vel*self.playable
 
         if keys[pygame.K_RIGHT]:
             if self.x <= 470:
-                self.x += self.vel
+                self.x += self.vel*self.playable
 
         if keys[pygame.K_UP]:
             if self.y >= 20:
-                self.y -= self.vel
+                self.y -= self.vel*self.playable
 
         if keys[pygame.K_DOWN]:
             if self.y <= 470:
-                self.y += self.vel
+                self.y += self.vel*self.playable*self.playable
 
         if self.countShotDelay >= self.COOLDOWN_TIME_MS:
             self.shot_delay = False
             self.countShotDelay = 0
-        if keys[pygame.K_SPACE] and not self.shot_delay:
+        if (keys[pygame.K_SPACE] and not self.shot_delay) and self.playable:
             # print("space")
 
             self.shot_delay = True

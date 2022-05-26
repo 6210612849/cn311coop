@@ -7,5 +7,5 @@ from pygame.rect import Rect
 class howtoscreen(Sprite):
     def draw(self, win):
         HowtoSprites = pygame.image.load(
-            r'.\howto.jpg')
+            r'.\pic\howto.jpg')
         win.blit(HowtoSprites, (0, 0))

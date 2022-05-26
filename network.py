@@ -6,8 +6,8 @@ from command import Command
 class Network:
     def __init__(self):
         self.client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        self.server = "192.168.43.142"
-        self.port = 8080
+        self.server = "172.20.10.3"
+        self.port = 465
         self.addr = (self.server, self.port)
         self.p = self.connect()
 
@@ -36,6 +36,8 @@ class Network:
             return return_dumps
         except socket.error as e:
             print(e)
+
+    
 
     def connect(self):
         try:
@@ -69,6 +71,42 @@ class Network:
             # command 5 for sent ready to server
 
             data_command = Command(5, data)
+
+            self.client.send(pickle.dumps(data_command))
+
+            return_dumps = pickle.loads(self.client.recv(2048))
+
+            return return_dumps
+        except socket.error as e:
+            print(e)
+
+    def getBossBullet(self):
+        try:
+            # command 7 to request bullet
+
+            data_command = Command(7, 0)
+
+            self.client.send(pickle.dumps(data_command))
+
+            return_dumps = pickle.loads(self.client.recv(2048))
+
+            return return_dumps
+        except socket.error as e:
+            print(e)
+    
+    def sendBossBullet(self, data):
+        try:
+            data_command = Command(8, data)
+            print("boss Bulleet data",  data_command)
+            self.client.send(pickle.dumps(data_command))
+        except socket.error as e:
+            print(e)
+
+    def getTeamHP(self):
+        try:
+            # command 7 to request bullet
+
+            data_command = Command(9, 0)
 
             self.client.send(pickle.dumps(data_command))
 

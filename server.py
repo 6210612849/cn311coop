@@ -7,8 +7,8 @@ from player import Player
 from bullet import Bullet
 from boss import Boss
 
-server = "192.168.43.142"
-port = 8080
+server = "172.20.10.3"
+port = 465
 
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
@@ -25,6 +25,8 @@ players = [Player(150, 350, 50, 50, (255, 0, 0)),
            Player(350, 350, 50, 50, (0, 255, 0))]
 count_player = 0
 bullets = []
+bossBullets = []
+players_hp = 100
 boss = [Boss(150, 0, 100, 100, (255, 0, 0)), ]
 
 
@@ -84,11 +86,17 @@ def thread_client(conn, player):
                 for bullet in bullets:
                     if bullet.y >= 0:
                         bullet.update()
-                        if (bullet.x > boss[0].x and bullet.x < boss[0].x+boss[0].width) and (bullet.y > boss[0].y and bullet.y < boss[0].y+boss[0].height):
-                            print("hit", bullet.x)
+                        if (boss[0].hp <= 0) and (bullet.x > boss[0].x and bullet.x < boss[0].x+boss[0].width) and (bullet.y > boss[0].y and bullet.y < boss[0].y+boss[0].height):
+                            print("hitboss after ded")
                             bullets.remove(bullet)
-                            boss[0].hp -= 10
-                            print("hit", boss[0].hp)
+                            print('i ll send sometrhing')
+                        else:
+                            if (bullet.x > boss[0].x and bullet.x < boss[0].x+boss[0].width) and (bullet.y > boss[0].y and bullet.y < boss[0].y+boss[0].height):
+                                print("hit", bullet.x)
+                                bullets.remove(bullet)
+                                boss[0].hp -= 10
+                                print("hit", boss[0].hp)
+                
                     else:
                         bullets.remove(bullet)
 
@@ -117,6 +125,40 @@ def thread_client(conn, player):
 
                 conn.sendall(pickle.dumps(reply))
 
+            #getBossBullet
+            if data.index == 7:
+                global players_hp
+                for bossbullet in bossBullets:
+                    
+                    
+                    if bossbullet.y >= 0 and bossbullet.y < 500:
+                        bossbullet.update()
+                        condition1 = (bossbullet.x > players[0].x and bossbullet.x < players[0].x+players[0].width) and (bossbullet.y > players[0].y and bossbullet.y < players[0].y+players[0].height)
+                        condition2 = (bossbullet.x > players[1].x and bossbullet.x < players[1].x+players[1].width) and (bossbullet.y > players[1].y and bossbullet.y < players[1].y+players[1].height)
+                        
+                        #print(bossbullet.x, bossbullet.y)
+                        if (condition1 or condition2):
+
+                            #bossBullets.remove(bullet)
+                            players_hp -= 1
+                            bossBullets.remove(bossbullet)
+                            print("hit: ", players_hp)
+                            
+                            #players[i].hp = players_hp
+                    
+                    else:
+                        bossBullets.remove(bossbullet)
+                conn.sendall(pickle.dumps(bossBullets))
+
+            #send bossbullet
+            if data.index == 8:
+                print(data.data)
+                bossBullets.append(data.data)
+
+            if data.index == 9:
+                conn.sendall(pickle.dumps(players_hp))
+            
+        
         except socket.error as e:
             print(e)
             break
@@ -127,7 +169,9 @@ def thread_client(conn, player):
 currentPlayer = 0
 while True:
     conn, addr = s.accept()
-    # print("connected", addr)
-    # print("connected", conn)
+    #print("connected", addr)
+    #print("connected", conn)
     start_new_thread(thread_client, (conn, currentPlayer,))
     currentPlayer += 1
+
+#def getHit(p, )
