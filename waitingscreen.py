@@ -4,7 +4,7 @@ from pygame.sprite import Sprite
 from pygame.rect import Rect
 
 
-class howtoscreen(Sprite):
+class WaitingScreen(Sprite):
     def draw(self, win):
         HowtoSprites = pygame.image.load(
             r'.\howto.jpg')

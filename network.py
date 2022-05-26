@@ -6,10 +6,22 @@ from command import Command
 class Network:
     def __init__(self):
         self.client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        self.server = "172.20.10.3"
-        self.port = 465
+        self.server = "192.168.43.142"
+        self.port = 8080
         self.addr = (self.server, self.port)
         self.p = self.connect()
+
+    def getPlayer(self):
+        try:
+            data_command = Command(0, 0)
+
+            self.client.send(pickle.dumps(data_command))
+
+            return_dumps = pickle.loads(self.client.recv(2048))
+
+            return return_dumps
+        except socket.error as e:
+            print(e)
 
     def getP(self):
         print("init p")
@@ -36,8 +48,6 @@ class Network:
             return return_dumps
         except socket.error as e:
             print(e)
-
-    
 
     def connect(self):
         try:
@@ -80,9 +90,23 @@ class Network:
         except socket.error as e:
             print(e)
 
-    def getBossBullet(self):
+    def createroom(self, data):
         try:
-            # command 7 to request bullet
+            # command 6 for createroom to server
+
+            data_command = Command(6, data)
+
+            self.client.send(pickle.dumps(data_command))
+
+            return_dumps = pickle.loads(self.client.recv(2048))
+
+            return return_dumps
+        except socket.error as e:
+            print(e)
+
+    def checkroom(self,):
+        try:
+            # command 6 for createroom to server
 
             data_command = Command(7, 0)
 
@@ -93,12 +117,18 @@ class Network:
             return return_dumps
         except socket.error as e:
             print(e)
-    
-    def sendBossBullet(self, data):
+
+    def getBossBullet(self):
         try:
-            data_command = Command(8, data)
-            print("boss Bulleet data",  data_command)
+            # command 8 to request bullet
+
+            data_command = Command(8, 0)
+
             self.client.send(pickle.dumps(data_command))
+
+            return_dumps = pickle.loads(self.client.recv(2048))
+
+            return return_dumps
         except socket.error as e:
             print(e)
 

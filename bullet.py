@@ -13,7 +13,7 @@ class Bullet():
 
     def draw(self, win):
         bulletImg = pygame.image.load(
-            r'./pic/bullet.png')
+            r'.\bullet.png')
         bulletImg = pygame.transform.smoothscale(
             bulletImg, (self.width, self.height))
         win.blit((bulletImg), (self.x, self.y))

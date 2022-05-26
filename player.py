@@ -13,11 +13,10 @@ class Player():
         self.color = color
         self.rect = (x, y, width, height)
         self.vel = 3
-
-        self.playable = 1
         self.shot_delay = False
         self.COOLDOWN_TIME_MS = 100
         self.countShotDelay = 0
+        self.playable = 1
 
         self.speed_buff_cooldown = False
         self.COOLDOWN_SPEED = 1000
@@ -28,20 +27,22 @@ class Player():
         self.SpeedBuffLimit = 300
 
     def draw(self, win, teamHP):
-        font=pygame.font.Font('BitMap.ttf', 30)
+        font = pygame.font.Font('BitMap.ttf', 30)
         sprites = pygame.image.load(r'.\pic\ufo.png')
         hpText = font.render(str(teamHP), True, (255, 0, 0))
 
         if(teamHP <= 0):
             sprites = pygame.image.load(r'.\pic\redcross.png')
-            hpText = font.render('u r lose now pls try again', True, (255, 0, 0))
+            sprites = pygame.transform.smoothscale(sprites, (100, 100))
+            hpText = font.render(
+                'u r lose now pls try again', True, (255, 0, 0))
             self.playable = 0
             self.x = 50
             self.y = 50
-        
-
-        win.blit(hpText, (self.x, self.y-60))
-        win.blit(sprites, (self.x, self.y))
+            win.blit(sprites, (self.x, self.y))
+        else:
+            win.blit(hpText, (self.x, self.y-60))
+            win.blit(sprites, (self.x, self.y))
         if self.GetSpeedBuff:
             # print("sprite speed buff")
             windSprites = pygame.image.load(r'.\pic\Wind-PNG-Images.png')
